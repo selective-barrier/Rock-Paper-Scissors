@@ -7,7 +7,7 @@
   </head>
   <body>
     <script>
-      //Randomly generate from ock, paper, and scissors for computer
+      //Randomly generate from rock, paper, and scissors for computer
       function getComputerChoice() {
         //Random among 0,1,2
         let randomNumber = Math.floor(Math.random() * 3);
@@ -20,16 +20,50 @@
       //Get user choice by prompting and case insensitive handling
       function getHumanChoice() {
         let userInput = prompt("Please enter rock, paper, or scissors")
-          .toUpperCase()
+          .trim()
           .toLowerCase();
         return userInput;
       }
-      let humanScore = 0,
-        computerScore = 0;
-      function playRound(humanChoice, computerChoice) {
-        if (humanChoice === computerChoice) {
-          consle.log(`"It's a draw! You both chose ${humanChoice}`);
+      function playGame() {
+        let humanScore = 0,
+          computerScore = 0;
+        function playRound(humanChoice, computerChoice) {
+          // console.log(`human:${humanChoice}  CPU ${computerChoice}`);
+          if (humanChoice === computerChoice) {
+            console.log(`It's a draw! You both chose ${humanChoice}.`);
+          } else if (
+            (humanChoice === "rock" && computerChoice === "scissors") ||
+            (humanChoice === "paper" && computerChoice === "rock") ||
+            (humanChoice === "scissors" && computerChoice === "paper")
+          ) {
+            console.log(`You win! ${humanChoice} beats ${computerChoice}.`);
+            humanScore++;
+          } else if (
+            (humanChoice === "rock" && computerChoice === "paper") ||
+            (humanChoice === "paper" && computerChoice === "scissors") ||
+            (humanChoice === "scissors" && computerChoice === "rock")
+          ) {
+            console.log(`You lose! ${computerChoice} beats ${humanChoice}.`);
+            computerScore++;
+          }
         }
+        for (let i = 0; i < 5; i++) {
+          playRound(getHumanChoice(), getComputerChoice());
+        }
+        if (humanScore > computerScore) {
+          console.log(
+            `You are the winner! The score is ${humanScore} vs ${computerScore}`
+          );
+        } else if (humanScore < computerScore) {
+          console.log(
+            `You lose. The score is ${humanScore} vs ${computerScore}. Better luck next time.`
+          );
+        } else {
+          console.log(
+            `It is a tie. The score is ${humanScore} vs ${computerScore}.`
+          );
+        }
+        console.log("Thanks for playing. Have a good day.");
       }
     </script>
   </body>
