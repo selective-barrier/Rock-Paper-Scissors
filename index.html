@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      //Randomly generate from ock, paper, and scissors for computer
+      function getComputerChoice() {
+        //Random among 0,1,2
+        let randomNumber = Math.floor(Math.random() * 3);
+        return randomNumber === 0
+          ? "rock"
+          : randomNumber === 1
+          ? "paper"
+          : "scissors";
+      }
+      //Get user choice by prompting and case insensitive handling
+      function getHumanChoice() {
+        let userInput = prompt("Please enter rock, paper, or scissors")
+          .toUpperCase()
+          .toLowerCase();
+        return userInput;
+      }
+      let humanScore = 0,
+        computerScore = 0;
+      function playRound(humanChoice, computerChoice) {
+        if (humanChoice === computerChoice) {
+          consle.log(`"It's a draw! You both chose ${humanChoice}`);
+        }
+      }
+    </script>
+  </body>
+</html>
