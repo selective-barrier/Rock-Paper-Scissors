@@ -6,65 +6,84 @@
     <title>Document</title>
   </head>
   <body>
+    <div id="result"></div>
+    <div id="menu">
+      <button type="button" id="rock">Rock</button>
+      <button type="button" id="paper">Paper</button>
+      <button type="button" id="scissors">Scissors</button>
+    </div>
+
     <script>
+      let humanScore = 0,
+        computerScore = 0;
+      const para = document.createElement("p");
+      const result = document.querySelector("#result");
+      const resultMessage = document.createElement("p");
+      result.appendChild(para);
+      result.appendChild(resultMessage);
       //Randomly generate from rock, paper, and scissors for computer
       function getComputerChoice() {
-        //Random among 0,1,2
+        const choice = ["rock", "paper", "scissors"];
         let randomNumber = Math.floor(Math.random() * 3);
-        return randomNumber === 0
-          ? "rock"
-          : randomNumber === 1
-          ? "paper"
-          : "scissors";
+        return choice[randomNumber];
       }
-      //Get user choice by prompting and case insensitive handling
-      function getHumanChoice() {
-        let userInput = prompt("Please enter rock, paper, or scissors")
-          .trim()
-          .toLowerCase();
-        return userInput;
+
+      //Compare players options and return result, also declare winner when anyone reach 5 points
+      function playRound(humanChoice, computerChoice) {
+        resultMessage.textContent = "";
+        if (humanChoice === computerChoice) {
+          para.textContent = `It's a draw! You both chose ${humanChoice}.`;
+        } else if (
+          (humanChoice === "rock" && computerChoice === "scissors") ||
+          (humanChoice === "paper" && computerChoice === "rock") ||
+          (humanChoice === "scissors" && computerChoice === "paper")
+        ) {
+          para.textContent = `You win! ${humanChoice} beats ${computerChoice}.`;
+          humanScore++;
+        } else if (
+          (humanChoice === "rock" && computerChoice === "paper") ||
+          (humanChoice === "paper" && computerChoice === "scissors") ||
+          (humanChoice === "scissors" && computerChoice === "rock")
+        ) {
+          para.textContent = `You lose! ${computerChoice} beats ${humanChoice}.`;
+          computerScore++;
+        }
+        if (humanScore >= 5 || computerScore >= 5) {
+          let winnerTemp = humanScore >= 5 ? "human" : "computer";
+          const gameOverEvent = new CustomEvent("gameOver", {
+            detail: {
+              winner: winnerTemp,
+              humanFinalScore: humanScore,
+              computerFinalScore: computerScore,
+            },
+          });
+          document.dispatchEvent(gameOverEvent);
+        }
       }
-      function playGame() {
-        let humanScore = 0,
-          computerScore = 0;
-        function playRound(humanChoice, computerChoice) {
-          // console.log(`human:${humanChoice}  CPU ${computerChoice}`);
-          if (humanChoice === computerChoice) {
-            console.log(`It's a draw! You both chose ${humanChoice}.`);
-          } else if (
-            (humanChoice === "rock" && computerChoice === "scissors") ||
-            (humanChoice === "paper" && computerChoice === "rock") ||
-            (humanChoice === "scissors" && computerChoice === "paper")
-          ) {
-            console.log(`You win! ${humanChoice} beats ${computerChoice}.`);
-            humanScore++;
-          } else if (
-            (humanChoice === "rock" && computerChoice === "paper") ||
-            (humanChoice === "paper" && computerChoice === "scissors") ||
-            (humanChoice === "scissors" && computerChoice === "rock")
-          ) {
-            console.log(`You lose! ${computerChoice} beats ${humanChoice}.`);
-            computerScore++;
-          }
+
+      document.addEventListener("gameOver", function (e) {
+        let text = ` The winner is ${e.detail.winner}, the score is ${e.detail.humanFinalScore} vs ${e.detail.computerFinalScore}. Click any button to start a new game.`;
+        resultMessage.textContent = text;
+        computerScore = 0;
+        humanScore = 0;
+      });
+
+      //Buttons for user to input
+      let menu = document.querySelector("#menu");
+      menu.addEventListener("click", (event) => {
+        let target = event.target;
+        switch (target.id) {
+          case "rock":
+            playRound("rock", getComputerChoice());
+            break;
+          case "paper":
+            playRound("paper", getComputerChoice());
+            break;
+          case "scissors":
+            playRound("scissors", getComputerChoice());
+            break;
         }
-        for (let i = 0; i < 5; i++) {
-          playRound(getHumanChoice(), getComputerChoice());
-        }
-        if (humanScore > computerScore) {
-          console.log(
-            `You are the winner! The score is ${humanScore} vs ${computerScore}`
-          );
-        } else if (humanScore < computerScore) {
-          console.log(
-            `You lose. The score is ${humanScore} vs ${computerScore}. Better luck next time.`
-          );
-        } else {
-          console.log(
-            `It is a tie. The score is ${humanScore} vs ${computerScore}.`
-          );
-        }
-        console.log("Thanks for playing. Have a good day.");
-      }
+      });
     </script>
   </body>
 </html>
